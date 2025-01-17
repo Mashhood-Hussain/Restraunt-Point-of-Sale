@@ -2,11 +2,11 @@ This is a Restraunt Point of Sale
 
 The aim is to:
 
-. Analyse User requirements​
-. Use project management tools such as Trello ​
-. Prioritise user needs​
-. Discuss technologies that could be used​
-. Create and document the development of a system
+Analyse User requirements​ | 
+Use project management tools such as Trello ​|
+Prioritise user needs​ | 
+Discuss technologies that could be used​ | 
+Create and document the development of a system
 
 The system requirments include:
 
