@@ -2,6 +2,10 @@
 const addTableButton = document.getElementById('add-table');
 const tablesDiv = document.getElementById('tables');
 const tableSelect = document.getElementById('table-select');
+const orderForm = document.getElementById('order-form');
+
+// Keep track of tables and orders
+const orders = {};
 
 // Initialize table counter
 let tableCount = 0;
@@ -22,13 +26,12 @@ addTableButton.addEventListener('click', () => {
   option.value = tableId;
   option.textContent = tableId;
   tableSelect.appendChild(option);
+
+  // Initialize orders for this table
+  orders[tableId] = [];
 });
 
-// Keep track of orders
-const orders = {};
-
 // Handle order form submission
-const orderForm = document.getElementById('order-form');
 orderForm.addEventListener('submit', (event) => {
   event.preventDefault(); // Prevent page reload
 
@@ -45,13 +48,10 @@ orderForm.addEventListener('submit', (event) => {
     return;
   }
 
-  // Add the order to the table's order list
-  if (!orders[selectedTable]) {
-    orders[selectedTable] = [];
-  }
+  // Add the new order to the selected table's orders
   orders[selectedTable].push(orderDetails);
 
-  // Update the table display
+  // Update the table's order list
   updateTableOrders(selectedTable);
 
   // Clear the form
@@ -63,11 +63,10 @@ function updateTableOrders(tableId) {
   // Find the table div
   const tableDivs = document.querySelectorAll('.table');
   tableDivs.forEach((tableDiv) => {
-    if (tableDiv.textContent === tableId) {
-      // Clear existing order list
+    if (tableDiv.textContent.startsWith(tableId)) {
+      // Check for existing order list or create a new one
       let orderList = tableDiv.querySelector('.order-list');
       if (!orderList) {
-        // Create an order list if it doesn't exist
         orderList = document.createElement('ul');
         orderList.className = 'order-list';
         tableDiv.appendChild(orderList);
