@@ -54,3 +54,22 @@ body {
     resize: none;
   }
   
+  .table {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fefefe;
+  }
+  
+  .order-list {
+    margin-top: 10px;
+    padding-left: 20px;
+  }
+  
+  .order-list li {
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #555;
+  }
+  
