@@ -10,13 +10,13 @@ The aim is to:
 
 The system requirments include:
 
-. Order Management:
-. Payment Processing:
-. Inventory Management​
-. Reporting and Analytics​
-. Customer Relationship Management (CRM):
-. Integration Capabilities:
-. User Management:
-. Security
-. User Interface:
-. Support and Maintenance
+Order Management  
+Payment Processing 
+Inventory Management​ 
+Reporting and Analytics​  
+Customer Relationship Management (CRM) 
+Integration Capabilities 
+User Management 
+Security 
+User Interface 
+Support and Maintenance 
