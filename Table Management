@@ -1,9 +1,39 @@
 <!DOCTYPE >
 <html>
-    <head>
-        <title>Order Management</title>
-    </head>
-    <body>
-        <h1> Table Management </h1>
-    </body>
+<head>
+  <title>Restaurant POS</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Restaurant Point of Sale</h1>
+  </header>
+
+  <main>
+    <section id="table-management">
+      <h2>Table Management</h2>
+      <div id="tables">
+        <!-- Tables will be dynamically added here -->
+      </div>
+      <button id="add-table">Add Table</button>
+    </section>
+
+    <section id="order-entry">
+      <h2>Order Entry</h2>
+      <form id="order-form">
+        <label for="table-select">Table:</label>
+        <select id="table-select">
+          <option value="">Select a Table</option>
+        </select>
+
+        <label for="order-details">Order:</label>
+        <textarea id="order-details" placeholder="Enter order details..."></textarea>
+
+        <button type="submit">Place Order</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
 </html>
