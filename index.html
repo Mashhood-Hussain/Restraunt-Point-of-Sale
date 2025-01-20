@@ -1,38 +1,98 @@
-<!DOCTYPE >
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <title>Restaurant POS</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>De-Rogio's Restaurant POS</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .hidden {
+      display: none;
+    }
+    .modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 20px;
+      background-color: white;
+      border: 1px solid #ccc;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+    .order-display, .kitchen-display {
+      margin-top: 20px;
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .order-display h3, .kitchen-display h3 {
+      margin: 0 0 10px;
+    }
+    #table-list {
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Restaurant Point of Sale</h1>
-  </header>
+  <h1>Welcome to De-Rogio's Restaurant POS</h1>
 
-  <main>
-    <section id="table-management">
-      <h2>Table Management</h2>
-      <div id="tables">
-        <!-- Tables will be dynamically added here -->
-      </div>
-      <button id="add-table">Add Table</button>
-    </section>
+  <!-- Table Selection -->
+  <label for="table-select">Select a Table:</label>
+  <select id="table-select">
+    <option value="">-- Choose Table --</option>
+    <!-- Tables will be dynamically added -->
+  </select>
 
-    <section id="order-entry">
-      <h2>Order Entry</h2>
-      <form id="order-form">
-        <label for="table-select">Table:</label>
-        <select id="table-select">
-          <option value="">Select a Table</option>
-        </select>
+  <!-- Table Controls -->
+  <div id="table-controls" class="hidden">
+    <h2 id="table-title"></h2>
+    <button id="order-starters">Order Starters</button>
+    <button id="order-desserts">Order Desserts</button>
+    <button id="finalise-order">Send Order to kitchen</button>
+    <button id="pay-order">Pay</button>
+  </div>
 
-        <label for="order-details">Order:</label>
-        <textarea id="order-details" placeholder="Enter order details..."></textarea>
+  <!-- Order Display -->
+  <div id="order-display" class="hidden order-display">
+    <h3>Current Order for <span id="current-table"></span></h3>
+    <ul id="order-list"></ul>
+  </div>
 
-        <button type="submit">Place Order</button>
-      </form>
-    </section>
-  </main>
+  <!-- Kitchen Display -->
+  <div id="kitchen-display" class="kitchen-display hidden">
+    <h3>Orders in Kitchen</h3>
+    <ul id="kitchen-orders"></ul>
+  </div>
+
+  <!-- Order Modal -->
+  <div id="order-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2 id="modal-title"></h2>
+      <div id="menu"></div>
+      <button id="submit-order">Submit Order</button>
+      <button id="cancel-order">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Payment Modal -->
+  <div id="payment-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Payment</h2>
+      <p id="payment-details"></p>
+      <label for="payment-method">Payment Method:</label>
+      <select id="payment-method">
+        <option value="cash">Cash</option>
+        <option value="card">Credit/Debit Card</option>
+        <option value="mobile">Mobile Payment</option>
+      </select>
+      <br><br>
+      <button id="confirm-payment">Confirm Payment</button>
+      <button id="cancel-payment">Cancel</button>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
