@@ -1,158 +1,69 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const totalTables = 18;
-    const maxCapacity = 6;
-    const orders = {};
-    const kitchenOrders = [];
-  
-    const tableSelect = document.getElementById('table-select');
-    const tableControls = document.getElementById('table-controls');
-    const tableTitle = document.getElementById('table-title');
-    const orderDisplay = document.getElementById('order-display');
-    const orderList = document.getElementById('order-list');
-    const orderModal = document.getElementById('order-modal');
-    const modalTitle = document.getElementById('modal-title');
-    const menu = document.getElementById('menu');
-    const kitchenDisplay = document.getElementById('kitchen-display');
-    const kitchenOrderList = document.getElementById('kitchen-orders');
-    const paymentModal = document.getElementById('payment-modal');
-    const paymentDetails = document.getElementById('payment-details');
-  
-    const menuItems = {
-      starters: [
-        { name: 'Bruschetta', price: 5 },
-        { name: 'Caesar Salad', price: 6 },
-        { name: 'Stuffed Mushrooms', price: 7 },
-        { name: 'Chicken Wings', price: 8 },
-      ],
-      desserts: [
-        { name: 'Chocolate Brownie', price: 4 },
-        { name: 'Cheesecake', price: 5 },
-        { name: 'Apple Pie', price: 4 },
-        { name: 'Tiramisu', price: 6 },
-      ],
+const menuItems = [
+    { name: "Bruschetta", description: "Grilled bread topped with fresh tomatoes, basil, garlic, and olive oil.", price: 6.50 },
+    { name: "Caesar Salad", description: "Crisp romaine lettuce, croutons, and Parmesan cheese, tossed in Caesar dressing.", price: 8.00 },
+    { name: "Stuffed Mushrooms", description: "Mushrooms filled with a savory mixture of breadcrumbs, garlic, and herbs.", price: 7.50 },
+    { name: "Chicken Wings", description: "Juicy wings tossed in your choice of BBQ, buffalo, or honey mustard sauce.", price: 9.00 },
+    { name: "Margherita Pizza", description: "Classic pizza with tomato sauce, fresh mozzarella, and basil.", price: 12.00 },
+    { name: "Spaghetti Carbonara", description: "Pasta with creamy sauce made from eggs, cheese, pancetta, and pepper.", price: 11.50 },
+    { name: "Grilled Chicken", description: "Marinated chicken breast served with steamed vegetables and mashed potatoes.", price: 14.00 },
+    { name: "Beef Tacos", description: "Soft tortillas filled with seasoned beef, lettuce, cheese, and salsa.", price: 10.00 },
+    { name: "Vegetable Stir-Fry", description: "Mixed vegetables stir-fried in a savory soy sauce, served with rice.", price: 9.50 },
+    { name: "Fish and Chips", description: "Battered and fried fish served with crispy fries and tartar sauce.", price: 13.00 },
+    { name: "Chocolate Brownie", description: "Rich and fudgy brownie served with a scoop of vanilla ice cream.", price: 5.50 },
+    { name: "Cheesecake", description: "Creamy cheesecake with a graham cracker crust, topped with fresh berries.", price: 6.00 },
+    { name: "Apple Pie", description: "Classic apple pie with a flaky crust, served with a dollop of whipped cream.", price: 5.00 },
+    { name: "Tiramisu", description: "Layers of coffee-soaked ladyfingers and mascarpone cheese, dusted with cocoa powder.", price: 7.00 }
+];
+
+function addItem() {
+    const orderItems = document.getElementById('orderItems');
+    const item = document.createElement('div');
+    item.innerHTML = `
+        <label for="item">Item:</label>
+        <select name="item" required>
+            ${menuItems.map(menuItem => `
+                <option value="${menuItem.name}" data-price="${menuItem.price}">
+                    ${menuItem.name} - £${menuItem.price.toFixed(2)}
+                </option>
+            `).join('')}
+        </select>
+        <label for="quantity">Quantity:</label>
+        <input type="number" name="quantity" min="1" required>
+    `;
+    orderItems.appendChild(item);
+}
+
+document.getElementById('orderForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const data = {
+        table: formData.get('table'),
+        waiter: formData.get('waiter'),
+        items: []
     };
-  
-    // Initialize tables
-    for (let i = 1; i <= totalTables; i++) {
-      const option = document.createElement('option');
-      option.value = `Table ${i}`;
-      option.textContent = `Table ${i}`;
-      tableSelect.appendChild(option);
-      orders[`Table ${i}`] = [];
-    }
-  
-    // Handle table selection
-    tableSelect.addEventListener('change', () => {
-      const selectedTable = tableSelect.value;
-      if (selectedTable) {
-        tableControls.classList.remove('hidden');
-        tableTitle.textContent = selectedTable;
-        orderDisplay.classList.remove('hidden');
-        document.getElementById('current-table').textContent = selectedTable;
-        updateOrderDisplay(selectedTable);
-      } else {
-        tableControls.classList.add('hidden');
-        orderDisplay.classList.add('hidden');
-      }
+
+    // Collect order items and calculate total cost
+    let totalCost = 0;
+    document.querySelectorAll('#orderItems div').forEach(item => {
+        const itemName = item.querySelector('select').value;
+        const quantity = parseInt(item.querySelector('input').value);
+        const price = parseFloat(item.querySelector('select').selectedOptions[0].dataset.price);
+        totalCost += price * quantity;
+        data.items.push({ name: itemName, quantity: quantity, price: price });
     });
-  
-    // Update order display
-    const updateOrderDisplay = (table) => {
-      orderList.innerHTML = '';
-      orders[table].forEach((item) => {
-        const li = document.createElement('li');
-        li.textContent = `${item.name} (£${item.price})`;
-        orderList.appendChild(li);
+
+    // Add total cost to the data
+    data.total_cost = totalCost;
+
+    // Send data to the server
+    fetch('submit_order.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    }).then(response => response.json())
+      .then(data => {
+          alert(`Order submitted successfully! Total Cost: £${totalCost.toFixed(2)}`);
       });
-    };
-  
-    // Open order modal
-    const openOrderModal = (type) => {
-      modalTitle.textContent = `Order ${type.charAt(0).toUpperCase() + type.slice(1)}`;
-      menu.innerHTML = '';
-      menuItems[type].forEach((item) => {
-        const label = document.createElement('label');
-        label.innerHTML = `
-          <input type="checkbox" value="${item.name}" data-price="${item.price}">
-          ${item.name} (£${item.price})
-        `;
-        menu.appendChild(label);
-        menu.appendChild(document.createElement('br'));
-      });
-      orderModal.classList.remove('hidden');
-    };
-  
-    document.getElementById('order-starters').addEventListener('click', () => openOrderModal('starters'));
-    document.getElementById('order-desserts').addEventListener('click', () => openOrderModal('desserts'));
-  
-    document.getElementById('submit-order').addEventListener('click', () => {
-      const selectedTable = tableSelect.value;
-      const selectedItems = Array.from(menu.querySelectorAll('input:checked')).map((input) => ({
-        name: input.value,
-        price: input.getAttribute('data-price'),
-      }));
-  
-      if (selectedItems.length === 0) {
-        alert('No items selected!');
-        return;
-      }
-  
-      orders[selectedTable].push(...selectedItems);
-      alert(`Order added for ${selectedTable}`);
-      updateOrderDisplay(selectedTable);
-      orderModal.classList.add('hidden');
-    });
-  
-    document.getElementById('cancel-order').addEventListener('click', () => {
-      orderModal.classList.add('hidden');
-    });
-  
-    document.getElementById('finalise-order').addEventListener('click', () => {
-      const selectedTable = tableSelect.value;
-      if (orders[selectedTable].length === 0) {
-        alert('No orders to SEND TO THE KITChen to prepare!');
-        return;
-      }
-  
-      const tableOrders = orders[selectedTable].map((item) => `${item.name} (£${item.price})`).join(', ');
-      const listItem = document.createElement('li');
-      listItem.innerHTML = `
-        <strong>${selectedTable}</strong>: ${tableOrders}
-        <button class="complete-order">Delete</button>
-      `;
-      kitchenOrderList.appendChild(listItem);
-      kitchenDisplay.classList.remove('hidden');
-  
-      listItem.querySelector('.complete-order').addEventListener('click', () => {
-        listItem.remove();
-        if (!kitchenOrderList.childElementCount) {
-          kitchenDisplay.classList.add('hidden');
-        }
-      });
-    });
-  
-    document.getElementById('pay-order').addEventListener('click', () => {
-      const selectedTable = tableSelect.value;
-      const total = orders[selectedTable].reduce((sum, item) => sum + parseFloat(item.price), 0);
-      if (total === 0) {
-        alert('No orders to pay for!');
-        return;
-      }
-  
-      paymentDetails.textContent = `Total for ${selectedTable}: £${total}`;
-      paymentModal.classList.remove('hidden');
-    });
-  
-    document.getElementById('confirm-payment').addEventListener('click', () => {
-      const selectedTable = tableSelect.value;
-      orders[selectedTable] = [];
-      updateOrderDisplay(selectedTable);
-      paymentModal.classList.add('hidden');
-      alert('Payment successful!');
-    });
-  
-    document.getElementById('cancel-payment').addEventListener('click', () => {
-      paymentModal.classList.add('hidden');
-    });
-  });
-  
+});
